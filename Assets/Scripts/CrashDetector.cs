@@ -61,6 +61,6 @@ public class CrashDetector : MonoBehaviour
         {
             surfaceEffector.enabled = true;
         }
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("EndGame");
     }
 }
