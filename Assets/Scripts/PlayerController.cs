@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] float torqueAmount = 1f;
     private Rigidbody2D rb2d;
+    [SerializeField] private TextMeshProUGUI scoreText;
 
     private float totalRotation = 0f;
     private float lastZRotation = 0f;
@@ -41,8 +43,10 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(totalRotation) >= 360f)
         {
             score += 100;
+            scoreText.text = "Score: " + score;
             Debug.Log("Scored! Current Score: " + score);
             totalRotation = 0f;
         }
+
     }
 }
