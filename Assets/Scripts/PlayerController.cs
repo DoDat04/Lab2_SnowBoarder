@@ -4,14 +4,27 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
+
     [SerializeField] float torqueAmount = 1f;
     private Rigidbody2D rb2d;
     [SerializeField] private TextMeshProUGUI scoreText;
 
     private float totalRotation = 0f;
     private float lastZRotation = 0f;
-
     private int score = 0;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -42,11 +55,15 @@ public class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(totalRotation) >= 360f)
         {
-            score += 100;
-            scoreText.text = "Score: " + score;
-            Debug.Log("Scored! Current Score: " + score);
+            AddScore(100);
             totalRotation = 0f;
         }
+    }
 
+    public void AddScore(int amount)
+    {
+        score += amount;
+        scoreText.text = "Score: " + score;
+        Debug.Log("Scored! Current Score: " + score);
     }
 }
