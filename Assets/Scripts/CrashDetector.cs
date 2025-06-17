@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class CrashDetector : MonoBehaviour
 {
-    [SerializeField] float delayBeforeReset = 1.5f;
+    [SerializeField] float delayBeforeReset = 0.5f;
     [SerializeField] AudioClip crashSound;
     private Rigidbody2D rb;
     private PlayerController playerController; 
