@@ -10,7 +10,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Snow
   - Water
   - UI
   - Ground
@@ -54,6 +54,9 @@ TagManager:
     locked: 0
   - name: Item
     uniqueID: 3444004275
+    locked: 0
+  - name: Snow
+    uniqueID: 1373435289
     locked: 0
   m_RenderingLayers:
   - Default
