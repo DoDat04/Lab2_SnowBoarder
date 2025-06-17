@@ -42,6 +42,20 @@ public class PlayerController : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         lastZRotation = rb2d.rotation;
+        
+        // Đảm bảo speed effect hiển thị trên cùng và ẩn ban đầu
+        if (speedEffect != null)
+        {
+            ParticleSystemRenderer particleRenderer = speedEffect.GetComponent<ParticleSystemRenderer>();
+            if (particleRenderer != null)
+            {
+                particleRenderer.sortingOrder = 102; // Đặt sorting order cao hơn finish line và particle effect
+            }
+            
+            // Ẩn speed effect ban đầu
+            speedEffect.Stop();
+            speedEffect.Clear();
+        }
     }
 
     void OnDrawGizmos()
