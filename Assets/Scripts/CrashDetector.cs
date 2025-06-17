@@ -5,6 +5,7 @@ public class CrashDetector : MonoBehaviour
 {
     [SerializeField] float delayBeforeReset = 0.5f;
     [SerializeField] AudioClip crashSound;
+    [SerializeField] float crashVolumeMultiplier = 1.5f; // Hệ số tăng âm lượng cho tiếng va chạm đất
     private Rigidbody2D rb;
     private PlayerController playerController; 
     private SurfaceEffector2D surfaceEffector; 
@@ -27,7 +28,9 @@ public class CrashDetector : MonoBehaviour
             if (audioSource != null && crashSound != null)
             {
                 float effectVolume = PlayerPrefs.GetFloat("EffectVolume", 1f);
-                audioSource.PlayOneShot(crashSound, effectVolume);
+                float finalVolume = effectVolume * crashVolumeMultiplier; // Tăng âm lượng
+                audioSource.PlayOneShot(crashSound, finalVolume);
+                Debug.Log("Đã phát âm thanh va chạm đất với volume: " + finalVolume);
             }
 
             // Vô hiệu hóa điều khiển ngay lập tức
@@ -49,18 +52,13 @@ public class CrashDetector : MonoBehaviour
                 rb.angularVelocity = 0f;
             }
 
-            // Đợi một khoảng thời gian rồi reset scene
-            Invoke("ReloadScene", delayBeforeReset);
+            // Chuyển về màn hình EndGame ngay lập tức
+            Invoke("LoadEndGameScene", delayBeforeReset);
         }
     }
 
-    void ReloadScene()
+    void LoadEndGameScene()
     {
-        // Bật lại Surface Effector 2D trước khi reset scene
-        if (surfaceEffector != null)
-        {
-            surfaceEffector.enabled = true;
-        }
         SceneManager.LoadScene("EndGame");
     }
 }
