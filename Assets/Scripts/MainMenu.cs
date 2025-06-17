@@ -5,6 +5,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] AudioClip menuMusic;
     private AudioSource audioSource;
     public GameObject optionsPanel;
+    public GameObject instructionPanel;
     private float effectVolume = 1.0f;
     [SerializeField] private UnityEngine.UI.Slider effectSlider;
     [SerializeField] private UnityEngine.UI.Slider musicSlider;
@@ -62,6 +63,13 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void OpenInstructionPanel()
+    {
+        if(instructionPanel != null)
+            instructionPanel.SetActive(true);
+        
+    }
+
     public void SetMusicVolume(float value)
     {
         if (audioSource != null)
@@ -72,5 +80,12 @@ public class MainMenu : MonoBehaviour
     {
         effectVolume = value;
         PlayerPrefs.SetFloat("EffectVolume", value);
+    }
+
+    public void setClose()
+    {
+        Application.Quit();
+        UnityEditor.EditorApplication.isPlaying = false;
+
     }
 }
