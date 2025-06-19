@@ -28,7 +28,21 @@ public class FinishLine : MonoBehaviour
 
     void ReloadScene()
     {
-        SceneManager.LoadScene("Level1");
+        string currentScene = SceneManager.GetActiveScene().name;
+        
+        if (currentScene == "Level1")
+        {
+            SceneManager.LoadScene("Level2");
+        }
+        else if (currentScene == "Level2")
+        {
+            SceneManager.LoadScene("Level3");
+        }
+        else if (currentScene == "Level3")
+        {
+            // Nếu đã hoàn thành màn cuối, có thể chuyển về MainMenu hoặc EndGame
+            SceneManager.LoadScene("EndGame");
+        }
     }
 
     void Start()
