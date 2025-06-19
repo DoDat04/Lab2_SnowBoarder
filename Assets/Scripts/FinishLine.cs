@@ -28,7 +28,7 @@ public class FinishLine : MonoBehaviour
 
     void ReloadScene()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level2");
     }
 
     void Start()
