@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip jumpClip;
     [SerializeField] private AudioSource audioSource;
 
+    [SerializeField] private AudioClip backgroundMusic;
+
     void Awake()
     {
         if (Instance == null)
@@ -57,7 +59,15 @@ public class PlayerController : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         lastZRotation = rb2d.rotation;
-        
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource != null && backgroundMusic != null)
+        {
+            audioSource.clip = backgroundMusic;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+
         // Khởi tạo Time Trial Mode
         if (isTimeTrialMode)
         {

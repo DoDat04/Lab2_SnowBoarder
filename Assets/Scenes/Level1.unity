@@ -22295,6 +22295,7 @@ MonoBehaviour:
   speedEffect: {fileID: 818555784}
   jumpClip: {fileID: 8300000, guid: 08878983b83b4dc4189181303ece7540, type: 3}
   audioSource: {fileID: 1769341363}
+  backgroundMusic: {fileID: 8300000, guid: 117494aebe754b149b1ccf24cce570c6, type: 3}
 --- !u!114 &1769341361
 MonoBehaviour:
   m_ObjectHideFlags: 0
