@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Coin
   - SnowRock
+  - Score
   layers:
   - Default
   - TransparentFX

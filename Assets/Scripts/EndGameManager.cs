@@ -6,11 +6,17 @@ public class EndGameManager : MonoBehaviour
 
     public void MainMenu()
     {
-        SceneManager.LoadScene("MainMenu"); // Đổi tên scene nếu cần
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void PlayAgain()
     {
-        SceneManager.LoadScene("Level1"); // Đổi tên scene nếu cần
+        // Reset điểm trước khi load lại Level
+        if (ScoreManager.instance != null)
+        {
+            ScoreManager.instance.ResetScore();
+        }
+
+        SceneManager.LoadScene("Level1");
     }
 }

@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float torqueAmount = 1f;
     [SerializeField] float jumpForce = 10f; // Lực nhảy
     private Rigidbody2D rb2d;
-    [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private LayerMask groundLayer; // Layer của mặt đất
     [SerializeField] private Transform groundCheck; // Điểm kiểm tra va chạm với mặt đất
     [SerializeField] private float groundCheckRadius = 0.2f; // Bán kính kiểm tra va chạm
@@ -312,8 +311,13 @@ public class PlayerController : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        score += amount;
-        scoreText.text = "Score: " + score;
-        Debug.Log("Scored! Current Score: " + score);
+        if (ScoreManager.instance != null)
+        {
+            ScoreManager.instance.AddScore(amount);
+        }
+        else
+        {
+            Debug.LogWarning("⚠ ScoreManager instance not found!");
+        }
     }
 }
