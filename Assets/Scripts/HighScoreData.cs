@@ -5,7 +5,6 @@ using System;
 public class HighScoreData
 {
     public int highScore;
-
 }
 
 [System.Serializable]

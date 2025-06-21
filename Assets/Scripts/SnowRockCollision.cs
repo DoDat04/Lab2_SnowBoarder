@@ -285,7 +285,7 @@ public class SnowRockCollision : MonoBehaviour
 
     void LoadEndGameScene()
     {
-        SceneManager.LoadScene("EndGame");
+        ScoreManager.instance.EndGame();
     }
 
     void StopPlayerImmediately(GameObject player)

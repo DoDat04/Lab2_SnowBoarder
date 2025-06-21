@@ -1,9 +1,16 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class EndGameManager : MonoBehaviour
 {
+    public TextMeshProUGUI FinalScore;
 
+    private void Start()
+    {
+        int score = PlayerPrefs.GetInt("FinalScore", 0);
+        FinalScore.text = "Score: " + score.ToString();
+    }
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");

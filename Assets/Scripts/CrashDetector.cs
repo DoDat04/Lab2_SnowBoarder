@@ -11,6 +11,7 @@ public class CrashDetector : MonoBehaviour
     private SurfaceEffector2D surfaceEffector; 
     private AudioSource audioSource;
 
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -59,6 +60,6 @@ public class CrashDetector : MonoBehaviour
 
     void LoadEndGameScene()
     {
-        SceneManager.LoadScene("EndGame");
+       ScoreManager.instance.EndGame();
     }
 }

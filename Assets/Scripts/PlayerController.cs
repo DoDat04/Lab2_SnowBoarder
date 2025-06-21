@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private AudioClip backgroundMusic;
 
+    public static ScoreManager instance;
+
     void Awake()
     {
         if (Instance == null)
@@ -281,7 +283,8 @@ public class PlayerController : MonoBehaviour
 
     void LoadEndGameScene()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("EndGame");
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("EndGame");
+        instance.EndGame();
     }
 
     // Hàm public để thêm thời gian (có thể dùng cho coin bonus)

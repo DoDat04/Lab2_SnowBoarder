@@ -9,7 +9,7 @@ public class DistanceTracker : MonoBehaviour
 
     private Vector3 startPosition;
     private Vector3 lastSpeedCheckPosition;
-    private float distanceTravelled = 0f;
+    public float distanceTravelled = 0f;
 
     private float speed = 0f;
     private float speedCheckTimer = 0f;
