@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerInputActions playerInputActions;
     public static PlayerController Instance { get; private set; }
 
     [SerializeField] float torqueAmount = 1f;
@@ -54,6 +55,16 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        playerInputActions = UserInput.Instance.playerInput; // ✅ Dùng chung
+    }
+    private void OnEnable()
+    {
+        playerInputActions.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerInputActions.Player.Disable();
     }
 
     void Start()
@@ -92,19 +103,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
-        if (groundCheck != null)
-        {
-            // Vẽ vòng tròn kiểm tra va chạm
-            Gizmos.color = isGrounded ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
-    }
-
     void Update()
     {
-        // Kiểm tra va chạm với mặt đất
         if (groundCheck == null)
         {
             Debug.LogError("GroundCheck chưa được gán!");
@@ -113,79 +113,40 @@ public class PlayerController : MonoBehaviour
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        // Xoay ván bằng phím mũi tên
-        if (Keyboard.current.leftArrowKey.isPressed)
-        {
-            rb2d.AddTorque(torqueAmount);
-        }
-        else if (Keyboard.current.rightArrowKey.isPressed)
-        {
-            rb2d.AddTorque(-torqueAmount);
-        }
+        // Xoay ván bằng input Move (float)
+        Vector2 moveInput = playerInputActions.Player.Move.ReadValue<Vector2>();
 
-        // Điều khiển tốc độ bằng phím mũi tên lên/xuống
-        float currentSpeed = moveSpeed;
-        if (Keyboard.current.upArrowKey.isPressed)
+        if (moveInput.x < 0)
         {
-            currentSpeed = boostSpeed;
-            // Cộng điểm khi tăng tốc
-            boostTime += Time.deltaTime;
-            if (boostTime >= boostScoreInterval)
-            {
-                AddScoreWithCombo(5); // Cộng 5 điểm mỗi giây boost với combo
-                boostTime = 0f;
-            }
+            rb2d.AddTorque(torqueAmount); // quay trái
         }
-        else if (Keyboard.current.downArrowKey.isPressed)
+        else if (moveInput.x > 0)
         {
-            currentSpeed = moveSpeed * 0.5f; // Giảm tốc xuống một nửa
-        }
-        else
-        {
-            // Reset boost time khi không boost
-            boostTime = 0f;
-        }
-
-        // Luôn trượt sang phải
-        rb2d.linearVelocity = new Vector2(currentSpeed, rb2d.linearVelocity.y);
-
-        // Bật/tắt hiệu ứng speed khi tăng tốc
-        bool boosting = Keyboard.current.upArrowKey.isPressed;
-        Debug.Log($"Boosting: {boosting}, isPlaying: {(speedEffect != null && speedEffect.isPlaying)}");
-        if (boosting && speedEffect != null)
-        {
-            speedEffect.Play(true);
-        }
-        else if (!boosting && speedEffect != null)
-        {
-            speedEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            rb2d.AddTorque(-torqueAmount); // quay phải
         }
 
         // Nhảy
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (playerInputActions.Player.Jump.triggered && isGrounded)
         {
-            if (isGrounded)
-            {
-                Jump();
-            }
+            Jump();
         }
 
         TrackRotation();
         UpdateCombo();
-        
+
         // Time Trial Mode - Đếm ngược thời gian
         if (isTimeTrialActive && isTimeTrialMode)
         {
             currentTime -= Time.deltaTime;
             UpdateTimeDisplay();
-            
-            // Kiểm tra hết thời gian
+
             if (currentTime <= 0f)
             {
                 TimeTrialGameOver();
             }
         }
     }
+
 
     void TrackRotation()
     {
