@@ -9,6 +9,7 @@ public class EndGameManager : MonoBehaviour
     private void Start()
     {
         int score = PlayerPrefs.GetInt("FinalScore", 0);
+        Debug.Log($"EndGameManager Start - Score from PlayerPrefs: {score}");
         FinalScore.text = "Score: " + score.ToString();
     }
     public void MainMenu()
@@ -23,6 +24,9 @@ public class EndGameManager : MonoBehaviour
         {
             ScoreManager.instance.ResetScore();
         }
+
+        // Reset Time Trial về 1 phút
+        PlayerController.ResetTimeTrial();
 
         SceneManager.LoadScene("Level1");
     }
