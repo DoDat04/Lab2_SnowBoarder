@@ -12,7 +12,7 @@ public class Coin : MonoBehaviour
             PlayerController.Instance.AddScore(1);
 
             // Thêm thời gian trong Time Trial Mode
-            PlayerController.Instance.AddTime(5f); // Cộng 5 giây
+            PlayerController.Instance.AddTime(2f); // Cộng 2 giây
 
             // Play sound (nếu có)
             if (coinSound != null)

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
     private float comboMultiplier = 1f; // Hệ số nhân điểm
 
     // Time Trial Mode - Cải thiện để fix bug
-    [SerializeField] private bool isTimeTrialMode = false; // Bật/tắt Time Trial Mode
+    [SerializeField] private bool isTimeTrialMode = true; // Bật/tắt Time Trial Mode
     [SerializeField] private float timeTrialDuration = 60f; // Thời gian ban đầu (60 giây)
     [SerializeField] private TextMeshProUGUI timeText; // UI hiển thị thời gian
     private float currentTime; // Thời gian còn lại
@@ -75,6 +76,11 @@ public class PlayerController : MonoBehaviour
             audioSource.Play();
         }
 
+        // Debug để kiểm tra Time Trial Mode
+        Debug.Log($"PlayerController Start - isTimeTrialMode: {isTimeTrialMode}");
+        Debug.Log($"PlayerController Start - hasTimeTrialStarted: {hasTimeTrialStarted}");
+        Debug.Log($"PlayerController Start - savedTimeTrialTime: {savedTimeTrialTime}");
+
         // Khởi tạo Time Trial Mode được cải thiện
         InitializeTimeTrialMode();
 
@@ -100,11 +106,57 @@ public class PlayerController : MonoBehaviour
         {
             InitializeTimeTrialMode();
         }
+        
+        // Tìm lại timeText sau khi HealthManager được khởi tạo
+        StartCoroutine(FindTimeTextAfterDelay());
+    }
+
+    private System.Collections.IEnumerator FindTimeTextAfterDelay()
+    {
+        yield return new WaitForSeconds(0.2f); // Đợi HealthManager khởi tạo xong
+        
+        // Tự động tìm timeText UI nếu chưa được gán
+        if (timeText == null)
+        {
+            // Tìm trong HealthManager trước
+            if (HealthManager.instance != null)
+            {
+                TextMeshProUGUI[] allTexts = HealthManager.instance.GetComponentsInChildren<TextMeshProUGUI>();
+                foreach (TextMeshProUGUI text in allTexts)
+                {
+                    if (text.name.Contains("Time") || text.text.Contains("Time"))
+                    {
+                        timeText = text;
+                        Debug.Log("✅ TimeText found in HealthManager after delay!");
+                        UpdateTimeDisplay(); // Cập nhật UI ngay lập tức
+                        break;
+                    }
+                }
+            }
+            
+            // Nếu không tìm thấy trong HealthManager, thử tìm theo tag
+            if (timeText == null)
+            {
+                GameObject foundTimeText = GameObject.FindGameObjectWithTag("TimeText");
+                if (foundTimeText != null)
+                {
+                    timeText = foundTimeText.GetComponent<TextMeshProUGUI>();
+                    Debug.Log("✅ TimeText auto-assigned after delay!");
+                    UpdateTimeDisplay(); // Cập nhật UI ngay lập tức
+                }
+                else
+                {
+                    Debug.LogWarning("⚠ Không tìm thấy TimeText trong HealthManager hoặc với tag 'TimeText' sau delay");
+                }
+            }
+        }
     }
 
     // Hàm khởi tạo Time Trial Mode được cải thiện
     void InitializeTimeTrialMode()
     {
+        Debug.Log($"InitializeTimeTrialMode called - isTimeTrialMode: {isTimeTrialMode}");
+        
         if (isTimeTrialMode)
         {
             // Nếu đây là lần đầu tiên bắt đầu Time Trial
@@ -124,6 +176,11 @@ public class PlayerController : MonoBehaviour
 
             isTimeTrialActive = true;
             UpdateTimeDisplay();
+            Debug.Log($"Time Trial Active: {isTimeTrialActive}, Current Time: {currentTime}");
+        }
+        else
+        {
+            Debug.Log("Time Trial Mode is disabled!");
         }
     }
 
@@ -232,10 +289,24 @@ public class PlayerController : MonoBehaviour
             savedTimeTrialTime = currentTime; // Liên tục cập nhật thời gian đã lưu
             UpdateTimeDisplay();
 
+            // Debug để kiểm tra timer có chạy không
+            if (Time.frameCount % 60 == 0) // Log mỗi 60 frames (khoảng 1 giây)
+            {
+                Debug.Log($"Timer running - Current Time: {currentTime:F1}");
+            }
+
             // Kiểm tra hết thời gian
             if (currentTime <= 0f)
             {
                 TimeTrialGameOver();
+            }
+        }
+        else
+        {
+            // Debug để kiểm tra tại sao timer không chạy
+            if (Time.frameCount % 120 == 0) // Log mỗi 120 frames
+            {
+                Debug.Log($"Timer NOT running - isTimeTrialActive: {isTimeTrialActive}, isTimeTrialMode: {isTimeTrialMode}");
             }
         }
     }
@@ -291,6 +362,8 @@ public class PlayerController : MonoBehaviour
 
     void UpdateTimeDisplay()
     {
+        Debug.Log($"UpdateTimeDisplay - timeText: {(timeText != null ? "NOT NULL" : "NULL")}, isTimeTrialMode: {isTimeTrialMode}");
+        
         if (timeText != null && isTimeTrialMode)
         {
             // Đảm bảo thời gian không âm
@@ -313,6 +386,12 @@ public class PlayerController : MonoBehaviour
             {
                 timeText.color = Color.white;
             }
+            
+            Debug.Log($"Time display updated: {timeText.text}");
+        }
+        else
+        {
+            Debug.LogWarning($"Cannot update time display - timeText: {(timeText != null ? "NOT NULL" : "NULL")}, isTimeTrialMode: {isTimeTrialMode}");
         }
     }
 

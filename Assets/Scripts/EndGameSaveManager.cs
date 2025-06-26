@@ -9,13 +9,31 @@ namespace Assets.Scripts
         public GameObject nameInputPanel;       // Panel chứa form nhập tên
         public TMP_InputField nameInputField;   // InputField để nhập tên
         public Button confirmButton;            // Nút xác nhận
-
+        public TextMeshProUGUI scoreDisplayText; // Text hiển thị điểm hiện tại
 
         void Start()
         {
             nameInputPanel.SetActive(true); // Hiện form ngay khi scene bắt đầu
             confirmButton.onClick.AddListener(OnSubmitName);
+            
+            // Hiển thị điểm hiện tại
+            UpdateScoreDisplay();
         }
+        
+        void UpdateScoreDisplay()
+        {
+            if (scoreDisplayText != null && ScoreManager.instance != null)
+            {
+                int currentScore = ScoreManager.instance.GetCurrentScore();
+                scoreDisplayText.text = "Score: " + currentScore.ToString();
+                Debug.Log($"Hiển thị điểm hiện tại: {currentScore}");
+            }
+            else
+            {
+                Debug.LogWarning("scoreDisplayText hoặc ScoreManager.instance là null!");
+            }
+        }
+        
         void OnSubmitName()
         {
             string playerName = nameInputField.text;

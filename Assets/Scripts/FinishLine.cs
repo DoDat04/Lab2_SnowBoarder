@@ -28,16 +28,36 @@ public class FinishLine : MonoBehaviour
 
     void ReloadScene()
     {
+        // Lưu tiến trình Time Trial trước khi chuyển scene
+        if (PlayerController.Instance != null)
+        {
+            PlayerController.Instance.SaveTimeTrialProgress();
+        }
+        
         string currentScene = SceneManager.GetActiveScene().name;
+        Debug.Log($"ReloadScene called - Current scene: '{currentScene}'");
         
         if (currentScene == "Level1")
         {
-
+            Debug.Log("Loading Level2...");
             SceneManager.LoadScene("Level2");
         }
         else if (currentScene == "Level2")
         {
-            SceneManager.LoadScene("EndGame");
+            Debug.Log("Loading EndGame...");
+            // Gọi EndGame để lưu điểm đúng cách thay vì load scene trực tiếp
+            if (ScoreManager.instance != null)
+            {
+                ScoreManager.instance.EndGame();
+            }
+            else
+            {
+                SceneManager.LoadScene("EndGame");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Unknown scene name: '{currentScene}'. Cannot determine next scene.");
         }
     }
 

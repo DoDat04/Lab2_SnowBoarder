@@ -65,6 +65,7 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(int value)
     {
         score += value;
+        Debug.Log($"AddScore: +{value}, Total score now: {score}");
         UpdateScoreUI();
     }
 
@@ -82,6 +83,7 @@ public class ScoreManager : MonoBehaviour
 
     public void EndGame()
     {
+        Debug.Log($"EndGame called - Final score: {score}");
         PlayerPrefs.SetInt("FinalScore", score);
         PlayerPrefs.Save();
         SceneManager.LoadScene("EndGame");
@@ -89,8 +91,15 @@ public class ScoreManager : MonoBehaviour
 
     public void ResetScore()
     {
+        Debug.Log($"ResetScore called - Score was: {score}, now: 0");
         score = 0;
         UpdateScoreUI();
+    }
+
+    public int GetCurrentScore()
+    {
+        Debug.Log($"GetCurrentScore called - Current score: {score}");
+        return score;
     }
 
     public void SaveHighScoreWithName(string playerName)
