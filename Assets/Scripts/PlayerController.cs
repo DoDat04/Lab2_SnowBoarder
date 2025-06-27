@@ -222,67 +222,83 @@ public class PlayerController : MonoBehaviour
     }
 
     void Update()
+{
+    if (groundCheck == null) return;
+
+    isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+    Vector2 moveInput = playerInputActions.Player.Move.ReadValue<Vector2>();
+
+    // Xoay trái (Left)
+    if (moveInput.x < 0)
     {
-        if (groundCheck == null) return;
+        rb2d.AddTorque(torqueAmount);
 
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        Vector2 moveInput = playerInputActions.Player.Move.ReadValue<Vector2>();
-
-        if (moveInput.x < 0)
+        boostTime += Time.deltaTime;
+        if (boostTime >= boostScoreInterval)
         {
-            rb2d.AddTorque(torqueAmount);
-
-            boostTime += Time.deltaTime;
-            if (boostTime >= boostScoreInterval)
-            {
-                AddScoreWithCombo(5);
-                boostTime = 0f;
-            }
-        }
-        else
-        {
+            AddScoreWithCombo(5);
             boostTime = 0f;
         }
+    }
+    else
+    {
+        boostTime = 0f;
+    }
 
-        // ✅ Boost bằng input y (không hardcode phím nữa)
-        bool boosting = moveInput.y > 0.5f;
-        if (boosting && speedEffect != null)
+    // Xoay phải (Right)
+    if (moveInput.x > 0)
+    {
+        rb2d.AddTorque(-torqueAmount);
+    }
+
+        // Tăng tốc (Up) hoặc giảm tốc (Down)
+        float currentSpeed;
+
+    if (moveInput.y > 0.5f)
+    {
+            // Tăng tốc
+        currentSpeed = moveSpeed + 10f;
+        if (speedEffect != null && !speedEffect.isPlaying) speedEffect.Play(true);
+    }
+    else if (moveInput.y < -0.5f)
+    {
+        // Giảm tốc
+        currentSpeed = moveSpeed * 0.5f;
+        if (speedEffect != null && speedEffect.isPlaying) speedEffect.Stop(true);
+    }
+    else
+    {
+        // Tốc độ bình thường
+        currentSpeed = moveSpeed;
+        if (speedEffect != null && speedEffect.isPlaying) speedEffect.Stop(true);
+    }
+
+    // Di chuyển sang phải
+    rb2d.linearVelocity = new Vector2(currentSpeed, rb2d.linearVelocity.y);
+
+    // Nhảy
+    if (playerInputActions.Player.Jump.triggered && isGrounded)
+    {
+        Jump();
+    }
+
+    TrackRotation();
+    UpdateCombo();
+
+    if (isTimeTrialActive && isTimeTrialMode)
+    {
+        currentTime -= Time.deltaTime;
+        savedTimeTrialTime = currentTime;
+        UpdateTimeDisplay();
+
+        if (currentTime <= 0f)
         {
-            speedEffect.Play(true);
-        }
-        else
-        {
-            speedEffect.Stop(true);
-        }
-
-        if (moveInput.x > 0)
-        {
-            rb2d.AddTorque(-torqueAmount);
-        }
-
-        rb2d.linearVelocity = new Vector2(moveSpeed, rb2d.linearVelocity.y);
-
-        if (playerInputActions.Player.Jump.triggered && isGrounded)
-        {
-            Jump();
-        }
-
-        TrackRotation();
-        UpdateCombo();
-
-        if (isTimeTrialActive && isTimeTrialMode)
-        {
-            currentTime -= Time.deltaTime;
-            savedTimeTrialTime = currentTime;
-            UpdateTimeDisplay();
-
-            if (currentTime <= 0f)
-            {
-                TimeTrialGameOver();
-            }
+            TimeTrialGameOver();
         }
     }
+}
+
     void TrackRotation()
     {
         float currentZRotation = rb2d.rotation;
