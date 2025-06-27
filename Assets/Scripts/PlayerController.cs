@@ -8,15 +8,15 @@ public class PlayerController : MonoBehaviour
     private PlayerInputActions playerInputActions;
     public static PlayerController Instance { get; private set; }
 
-    [SerializeField] float torqueAmount = 1f;
+    [SerializeField] float torqueAmount = 5f;
     [SerializeField] float jumpForce = 10f; // Lực nhảy
     private Rigidbody2D rb2d;
     [SerializeField] private LayerMask groundLayer; // Layer của mặt đất
     [SerializeField] private Transform groundCheck; // Điểm kiểm tra va chạm với mặt đất
     [SerializeField] private float groundCheckRadius = 0.2f; // Bán kính kiểm tra va chạm
     [SerializeField] private float moveSpeed = 5f;      // Tốc độ bình thường
+    [SerializeField] private float boostAmount = 5f;
     [SerializeField] private float boostSpeed = 10f;    // Tốc độ khi tăng tốc
-    private bool isBoosting = false;
 
     private float totalRotation = 0f;
     private float lastZRotation = 0f;
@@ -258,7 +258,7 @@ public class PlayerController : MonoBehaviour
     if (moveInput.y > 0.5f)
     {
             // Tăng tốc
-        currentSpeed = moveSpeed + 10f;
+        currentSpeed = moveSpeed + boostAmount;
         if (speedEffect != null && !speedEffect.isPlaying) speedEffect.Play(true);
     }
     else if (moveInput.y < -0.5f)

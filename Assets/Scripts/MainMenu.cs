@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class MainMenu : MonoBehaviour
 {
@@ -19,42 +22,48 @@ public class MainMenu : MonoBehaviour
             audioSource.loop = true;
             audioSource.Play();
         }
+
         if (optionsPanel != null)
             optionsPanel.SetActive(false);
+
         float effectVol = PlayerPrefs.GetFloat("EffectVolume", 1f);
         float musicVol = PlayerPrefs.GetFloat("MusicVolume", 1f);
+
         if (musicSlider != null)
         {
             musicSlider.onValueChanged.RemoveAllListeners();
             musicSlider.value = musicVol;
             musicSlider.onValueChanged.AddListener(SetMusicVolume);
         }
+
         if (effectSlider != null)
         {
             effectSlider.onValueChanged.RemoveAllListeners();
             effectSlider.value = effectVol;
             effectSlider.onValueChanged.AddListener(SetEffectVolume);
         }
+
         if (audioSource != null)
             audioSource.volume = musicVol;
     }
 
-    // Hàm này sẽ được gọi khi nhấn nút Play
     public void PlayGame()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Level1"); // Đổi tên scene nếu cần
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
     }
 
     public void OpenOptions()
     {
         if (optionsPanel != null)
             optionsPanel.SetActive(true);
+
         if (effectSlider != null)
         {
             effectSlider.onValueChanged.RemoveAllListeners();
             effectSlider.value = PlayerPrefs.GetFloat("EffectVolume", 1f);
             effectSlider.onValueChanged.AddListener(SetEffectVolume);
         }
+
         if (musicSlider != null)
         {
             musicSlider.onValueChanged.RemoveAllListeners();
@@ -65,9 +74,8 @@ public class MainMenu : MonoBehaviour
 
     public void OpenInstructionPanel()
     {
-        if(instructionPanel != null)
+        if (instructionPanel != null)
             instructionPanel.SetActive(true);
-        
     }
 
     public void SetMusicVolume(float value)
@@ -84,8 +92,10 @@ public class MainMenu : MonoBehaviour
 
     public void setClose()
     {
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
         Application.Quit();
-        UnityEditor.EditorApplication.isPlaying = false;
-
+#endif
     }
 }
