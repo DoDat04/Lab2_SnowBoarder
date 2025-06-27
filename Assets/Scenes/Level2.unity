@@ -19097,15 +19097,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3557b774f4e32ea43b80a6344ac6ee93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueAmount: 4
-  jumpForce: 11
+  torqueAmount: 8
+  jumpForce: 15
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheck: {fileID: 1599542689}
   groundCheckRadius: 0.2
-  moveSpeed: 9
-  boostSpeed: 15
+  moveSpeed: 5
+  boostSpeed: 8
   isTimeTrialMode: 1
   timeTrialDuration: 60
   timeText: {fileID: 383914915}
